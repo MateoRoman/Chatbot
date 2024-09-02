@@ -27,13 +27,13 @@ class FAISSManager:
         distances, indices = self.index.search(np.array(query_embedding.tolist()), k)
         return distances, indices
 
-    def get_answer(self, query, k=5, threshold=0.6):
+    def get_answer(self, query, k=5, threshold=0.4):
         distances, indices = self.search(query, k)
         most_similar_index = indices[0][0]  # Obtener el índice más cercano
 
-        # Verificar si la similitud más alta es mayor que el umbral
-        if distances[0][0] < threshold:
+        # Verificar si la distancia más baja es menor que el umbral
+        if distances[0][0] <= threshold:  # Si la distancia es menor o igual al umbral, es suficientemente similar
+            return self.answers_df[most_similar_index].strip()
+        else:
+            # Si la distancia es mayor que el umbral, la similitud no es suficiente
             return None
-        
-        # Asegúrate de devolver la respuesta completa
-        return self.answers_df[most_similar_index].strip()
